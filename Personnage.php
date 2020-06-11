@@ -5,6 +5,7 @@ abstract class Personnage
     protected $_id;
     protected $_nom = 'inconnu';
     protected $_force = 20;
+    protected $_niveau = 20;
     protected $_experience = 0;
     protected $_degats = 0;
     protected $_type = 'inconnu';
@@ -41,7 +42,7 @@ abstract class Personnage
         . ' et a une force de ' . $this->getForce() . '.';
     }
 
-    public function hydrate(array $ligne)
+    final public function hydrate(array $ligne)
     {
         foreach ($ligne as $key => $value) {
             // On récupère le nom du setter correspondant à l'attribut.
@@ -141,18 +142,7 @@ abstract class Personnage
         return $adversaire->recevoirDegats();
     }
 
-    public function recevoirDegats()
-    {
-        $this->_degats += 5;
-
-        // Si on a 100 de dégâts ou plus, on supprime le personnage de la BDD.
-        if ($this->_degats >= 100) {
-            return self::PERSONNAGE_TUE;
-        }
-
-        // Sinon, on se contente de mettre à jour les dégâts du personnage.
-        return self::PERSONNAGE_FRAPPE;
-    }
+    abstract public function recevoirDegats();
 
     public function getHeureReveil()
     {
@@ -229,11 +219,7 @@ abstract class Personnage
 
     public function setId($id)
     {
-        if (!is_int($force)) {
-            trigger_error('L\'id du personnage doit être une valeur entière.');
-        } else {
-            $this->_id = $id;
-        }
+        $this->_id = (int) $id;
     }
 
     public function setReveil($time)
@@ -243,6 +229,34 @@ abstract class Personnage
         } else {
             $this->_reveil = (int) $time;
         }
+    }
+
+    /**
+     * Get the value of _niveau
+     */
+    public function getNiveau()
+    {
+        return $this->_niveau;
+    }
+
+    /**
+     * Set the value of _niveau
+     *
+     * @return  self
+     */
+    public function setNiveau($niveau)
+    {
+        $this->_niveau = $niveau;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of _experience
+     */
+    public function getExperience()
+    {
+        return $this->_experience;
     }
 
 }
